@@ -1,0 +1,24 @@
+@prefix uw:   <https://example.org/s2r/uw#> .
+@prefix cond: <https://example.org/s2r/condition/> .
+@prefix drug: <https://example.org/s2r/drug/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# Curated drug dictionary (reviewed by a human; trust level "curated").
+# Every drug in the catalog has a generic name. Only some have curated
+# brand names (skos:altLabel) and a curated uw:treats fact. The gaps are
+# deliberate: the LLM knowledge-extraction step proposes candidates for them.
+
+drug:metformin      a uw:Drug ; rdfs:label "metformin"      ; skos:altLabel "glucophage" ; uw:treats cond:DiabetesMellitus .
+drug:lisinopril     a uw:Drug ; rdfs:label "lisinopril"     ; skos:altLabel "zestril"    ; uw:treats cond:Hypertension .
+drug:clopidogrel    a uw:Drug ; rdfs:label "clopidogrel"    ; skos:altLabel "plavix"     ; uw:treats cond:CoronaryArteryDisease .
+drug:atorvastatin   a uw:Drug ; rdfs:label "atorvastatin"   ; skos:altLabel "lipitor"    ; uw:treats cond:Hyperlipidemia .
+drug:levothyroxine  a uw:Drug ; rdfs:label "levothyroxine"  ; skos:altLabel "synthroid"  ; uw:treats cond:Hypothyroidism .
+drug:albuterol      a uw:Drug ; rdfs:label "albuterol"      ; uw:treats cond:Asthma .
+drug:sertraline     a uw:Drug ; rdfs:label "sertraline"     ; uw:treats cond:Depression .
+
+# In the catalog, but not curated yet: no brand names, no indication.
+drug:empagliflozin   a uw:Drug ; rdfs:label "empagliflozin" .
+drug:apixaban        a uw:Drug ; rdfs:label "apixaban" .
+drug:cholecalciferol a uw:Drug ; rdfs:label "cholecalciferol" .
+drug:cetirizine      a uw:Drug ; rdfs:label "cetirizine" .

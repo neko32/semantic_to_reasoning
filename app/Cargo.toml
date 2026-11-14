@@ -1,0 +1,46 @@
+[package]
+name = "s2r"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+description = "Semantic to Reasoning: Gold-layer business truth vs. triple-store relationship truth and inference"
+license = "AGPL-3.0-only"
+publish = false
+
+[lib]
+name = "s2r"
+path = "src/lib.rs"
+
+[[bin]]
+name = "s2r"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.104"
+chrono = { version = "0.4.45", default-features = false, features = ["std", "clock"] }
+clap = { version = "4.6.7", features = ["derive", "env"] }
+comfy-table = "8.0.1"
+csv = "1.4.0"
+dotenvy = "0.15.7"
+duckdb = { version = "1.20000.2", features = ["bundled"] }
+oxigraph = { version = "0.5.13", default-features = false }
+rand = { version = "0.10.3", default-features = false, features = ["std"] }
+rand_chacha = "0.10.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+tempfile = "3.27.0"
+thiserror = "2.0.21"
+toml = "1.2.1"
+ureq = { version = "3.5.2", default-features = false, features = ["json"] }
+
+[dev-dependencies]
+httpmock = "0.9.0"
+
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+# Test assertions read better as assert!(x.is_empty()).
+assert_is_empty = "allow"
+# Short names (a, b, t, s) are idiomatic in the small closures and tests here.
+many_single_char_names = "allow"

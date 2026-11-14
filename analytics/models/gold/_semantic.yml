@@ -1,0 +1,67 @@
+version: 2
+
+# The semantic layer: one agreed definition of each new-business metric.
+semantic_models:
+  - name: submission
+    description: "Life-insurance applications received."
+    model: ref('fct_submissions')
+    defaults:
+      agg_time_dimension: received_date
+    entities:
+      - name: submission
+        type: primary
+        expr: submission_id
+      - name: insured
+        type: foreign
+        expr: insured_party_id
+      - name: owner
+        type: foreign
+        expr: owner_party_id
+    dimensions:
+      - name: received_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: channel
+        type: categorical
+      - name: product_type
+        type: categorical
+      - name: status
+        type: categorical
+    measures:
+      - name: submission_count
+        description: "Number of applications received."
+        agg: count
+        expr: submission_id
+      - name: placed_count
+        description: "Applications that were issued and paid."
+        agg: sum
+        expr: is_placed
+      - name: face_amount_avg
+        description: "Average face amount applied for, in USD."
+        agg: average
+        expr: face_amount
+
+metrics:
+  - name: submissions
+    label: "Submissions"
+    type: simple
+    type_params:
+      measure: submission_count
+  - name: placed_submissions
+    label: "Placed submissions"
+    type: simple
+    type_params:
+      measure: placed_count
+  - name: placement_rate
+    label: "Placement rate"
+    description: "Placed submissions / submissions received."
+    type: ratio
+    type_params:
+      numerator: placed_submissions
+      denominator: submissions
+  - name: avg_face_amount
+    label: "Average face amount"
+    type: simple
+    type_params:
+      measure: face_amount_avg

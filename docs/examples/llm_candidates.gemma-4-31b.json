@@ -1,0 +1,43 @@
+{
+  "model": "google/gemma-4-31b",
+  "mappings": [
+    {
+      "text": "ELIQUIS 5MG",
+      "drug": "apixaban",
+      "confidence": 1.0
+    },
+    {
+      "text": "Jardiance 10 mg tablet",
+      "drug": "empagliflozin",
+      "confidence": 1.0
+    },
+    {
+      "text": "Vitamin D3 2000 IU",
+      "drug": "cholecalciferol",
+      "confidence": 1.0
+    }
+  ],
+  "indications": [
+    {
+      "drug": "apixaban",
+      "condition": "AtrialFibrillation",
+      "confidence": 0.9
+    },
+    {
+      "drug": "cetirizine",
+      "condition": null,
+      "confidence": 1.0
+    },
+    {
+      "drug": "cholecalciferol",
+      "condition": null,
+      "confidence": 1.0
+    },
+    {
+      "drug": "empagliflozin",
+      "condition": "Type2Diabetes",
+      "confidence": 0.95
+    }
+  ],
+  "rejected": []
+}

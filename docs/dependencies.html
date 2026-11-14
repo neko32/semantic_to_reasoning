@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dependencies</title>
+<style>
+  :root { --bg:#f8fafc; --fg:#0f172a; --muted:#64748b; --line:#e2e8f0; --card:#fff; --accent:#4f46e5; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f172a; --fg:#e2e8f0; --muted:#94a3b8; --line:#1e293b; --card:#111827; --accent:#a5b4fc; } }
+  body { margin:0; padding:32px 16px; background:var(--bg); color:var(--fg); font:15px/1.5 system-ui, sans-serif; }
+  main { max-width:960px; margin:0 auto; }
+  h1 { margin:0 0 4px; } p.sub { color:var(--muted); margin:0 0 24px; }
+  h2 { margin:28px 0 8px; font-size:18px; color:var(--accent); }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  th, td { text-align:left; padding:8px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:13px; color:var(--muted); font-weight:600; }
+  td:nth-child(2) { font-family:ui-monospace, Consolas, monospace; white-space:nowrap; }
+  .wrap { overflow-x:auto; }
+  .note { color:var(--muted); font-size:14px; margin-top:8px; }
+</style>
+</head>
+<body>
+<main>
+<h1>Dependencies</h1>
+<p class="sub">Semantic to Reasoning · versions as locked on 2026-11-14 · <code>cargo audit</code>: 0 unaccepted vulnerabilities (2 accepted, see below) · <code>pip-audit</code>: 0 known vulnerabilities</p>
+
+<h2>Graph, reasoner and CLI (Rust, app/)</h2>
+<div class="wrap"><table>
+<tr><th>Crate</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>oxigraph</td><td>0.5.13</td><td>Embedded in-memory RDF store and SPARQL 1.1 engine (default features off: no RocksDB, no HTTP)</td></tr>
+<tr><td>duckdb</td><td>1.20000.2</td><td>Reads Silver and runs the Gold SQL, read-only; <code>bundled</code> DuckDB 2.0 engine, same file format as the Python side</td></tr>
+<tr><td>clap</td><td>4.6.7</td><td>Command-line parsing with <code>derive</code> and environment-variable fallbacks</td></tr>
+<tr><td>ureq</td><td>3.5.2</td><td>Small blocking HTTP client for the LM Studio API (JSON only, no TLS: the endpoint is local)</td></tr>
+<tr><td>serde</td><td>1.0.229</td><td>(De)serialisation derive for rules, candidates and ground truth</td></tr>
+<tr><td>serde_json</td><td>1.0.154</td><td>LLM request/response bodies, candidate cache, ground truth</td></tr>
+<tr><td>toml</td><td>1.2.1</td><td>Parses the business rules in <code>rules/underwriting.toml</code></td></tr>
+<tr><td>csv</td><td>1.4.0</td><td>Writes Bronze CSVs; parses MetricFlow CSV output</td></tr>
+<tr><td>rand</td><td>0.10.3</td><td>Random sampling for the synthetic data generator</td></tr>
+<tr><td>rand_chacha</td><td>0.10.0</td><td>Seeded ChaCha8 generator, so the data is reproducible on every platform</td></tr>
+<tr><td>chrono</td><td>0.4.45</td><td>Dates in the domain model and generator</td></tr>
+<tr><td>comfy-table</td><td>8.0.1</td><td>Side-by-side result tables in the terminal</td></tr>
+<tr><td>tempfile</td><td>3.27.0</td><td>Temporary file for <code>mf query --csv</code> output</td></tr>
+<tr><td>dotenvy</td><td>0.15.7</td><td>Loads an optional <code>.env</code> file</td></tr>
+<tr><td>anyhow</td><td>1.0.104</td><td>Error context chains for the CLI</td></tr>
+<tr><td>thiserror</td><td>2.0.21</td><td>Typed domain validation errors</td></tr>
+</table></div>
+
+<h2>Rust tests (dev-dependencies)</h2>
+<div class="wrap"><table>
+<tr><th>Crate</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>httpmock</td><td>0.9.0</td><td>Stub of the LM Studio chat-completions endpoint</td></tr>
+</table></div>
+
+<h2>Medallion and semantic layer (Python 3.14, analytics/)</h2>
+<div class="wrap"><table>
+<tr><th>Package</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>dbt-core</td><td>1.12.7</td><td>Bronze → Silver → Gold models and data tests (dbt Core v1, required by MetricFlow 0.15)</td></tr>
+<tr><td>dbt-duckdb</td><td>1.11.1</td><td>dbt adapter for the local DuckDB warehouse; reads Bronze CSVs with <code>read_csv</code></td></tr>
+<tr><td>duckdb</td><td>2.0.0</td><td>Warehouse engine</td></tr>
+<tr><td>dbt-metricflow</td><td>0.15.0</td><td><code>mf</code> CLI for the semantic layer</td></tr>
+<tr><td>metricflow</td><td>0.213.0</td><td>Semantic-layer engine: compiles metric requests to SQL</td></tr>
+</table></div>
+
+<h2>Tooling</h2>
+<div class="wrap"><table>
+<tr><th>Tool</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>Rust</td><td>1.99.1</td><td>Compiler (edition 2024)</td></tr>
+<tr><td>cargo-llvm-cov</td><td>latest</td><td>Line coverage; HTML report in <code>docs/coverage/html</code></td></tr>
+<tr><td>cargo-audit</td><td>latest</td><td>RustSec advisory scan</td></tr>
+<tr><td>cross</td><td>latest</td><td>Static <code>x86_64-unknown-linux-musl</code> release build with a C++ toolchain for bundled DuckDB</td></tr>
+<tr><td>uv</td><td>0.13.8</td><td>Python and virtualenv management for <code>analytics/</code></td></tr>
+</table></div>
+
+<h2>External service (optional)</h2>
+<div class="wrap"><table>
+<tr><th>Service</th><th>Version</th><th>Purpose</th></tr>
+<tr><td>LM Studio</td><td>OpenAI-compatible API</td><td>Runs the local LLM used only by <code>s2r extract</code></td></tr>
+<tr><td>Gemma</td><td>gemma-4-31b</td><td>Proposes drug mappings and indications; output is validated, cached and gated by a trust policy</td></tr>
+</table></div>
+
+<h2>Accepted advisories</h2>
+<div class="wrap"><table>
+<tr><th>Advisory</th><th>Crate</th><th>Reason</th></tr>
+<tr><td>RUSTSEC-2026-0194</td><td>quick-xml 0.37.5</td><td rowspan="2">Memory exhaustion in <code>NsReader</code>. Pulled in by oxigraph 0.5.13, which pins this version. s2r never parses RDF/XML or SPARQL-XML results. Remove when oxigraph upgrades.</td></tr>
+<tr><td>RUSTSEC-2026-0195</td><td>quick-xml 0.37.5</td></tr>
+</table></div>
+<p class="note">Configured in <code>app/.cargo/audit.toml</code>.</p>
+</main>
+</body>
+</html>

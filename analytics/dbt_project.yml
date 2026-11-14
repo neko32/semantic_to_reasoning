@@ -1,0 +1,26 @@
+name: s2r
+version: "0.1.0"
+config-version: 2
+profile: s2r
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # Bronze CSVs written by `s2r seed`. Relative to this directory unless absolute.
+  bronze_dir: "{{ env_var('S2R_BRONZE_DIR', '../data/bronze') }}"
+
+models:
+  s2r:
+    bronze:
+      +schema: bronze
+      +materialized: view
+    silver:
+      +schema: silver
+      +materialized: table
+    gold:
+      +schema: gold
+      +materialized: table

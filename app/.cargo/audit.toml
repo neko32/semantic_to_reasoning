@@ -1,0 +1,9 @@
+# Accepted advisories (reviewed 2026-11-14).
+#
+# RUSTSEC-2026-0194 / RUSTSEC-2026-0195: quick-xml 0.37.x NsReader memory exhaustion.
+# Pulled in by oxigraph 0.5.13 -> oxrdfxml 0.2.5 / sparesults 0.3.5, which pin 0.37.
+# s2r never parses RDF/XML or SPARQL-XML results; it only loads the Turtle files
+# shipped in this repository and reads DuckDB tables. Remove these entries as soon
+# as oxigraph moves to quick-xml >= 0.41.
+[advisories]
+ignore = ["RUSTSEC-2026-0194", "RUSTSEC-2026-0195"]

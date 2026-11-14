@@ -1,0 +1,80 @@
+# Business rules for the underwriting reasoner.
+#
+# Each rule is a Horn clause over triple patterns:
+#   when   - patterns that must all match (joined like a SPARQL basic graph pattern)
+#   filter - optional SPARQL FILTER expressions
+#   unless - patterns that must NOT match (SPARQL FILTER NOT EXISTS).
+#            Allowed only in stratum 2, which runs after stratum 1 reaches a
+#            fixpoint. This is a closed-world screening check, not OWL semantics.
+#   then   - triples to infer, one per binding
+#
+# Tokens: ?var, prefixed names (uw:, cond:, rc:, drug:, rdf:, rdfs:, owl:, skos:),
+# <full IRIs>, and the literals true / false.
+# The OWL axioms in ontology/uw.ttl are compiled into further rules automatically.
+
+[[rule]]
+id = "II-SELF"
+stratum = 1
+description = "Everyone has an insurable interest in their own life."
+when = ["?p rdf:type uw:Person"]
+then = ["?p uw:hasInsurableInterestIn ?p"]
+
+[[rule]]
+id = "II-NOT-ESTABLISHED"
+stratum = 2
+description = "No chain of relationships gives the owner an insurable interest in the insured (possible STOLI)."
+when = ["?sub uw:owner ?o", "?sub uw:insured ?i"]
+unless = ["?o uw:hasInsurableInterestIn ?i"]
+then = ["?sub uw:hasFinding uw:InsurableInterestNotEstablished"]
+
+[[rule]]
+id = "UW-DECLARED"
+stratum = 1
+description = "A 'yes' answer is declared evidence of the condition for the insured."
+when = ["?sub uw:insured ?p", "?sub uw:disclosedYes ?c"]
+then = ["?p uw:declaredCondition ?c"]
+
+[[rule]]
+id = "UW-NONDISCLOSURE"
+stratum = 1
+description = "Prescription history implies a condition the applicant said 'no' to."
+when = ["?sub uw:insured ?p", "?p uw:indicatedCondition ?c", "?sub uw:disclosedNo ?c"]
+then = ["?sub uw:hasFinding uw:PotentialNonDisclosure"]
+
+[[rule]]
+id = "UW-PREFERRED-INELIGIBLE"
+stratum = 1
+description = "Any cardiometabolic evidence (declared or implied) rules out preferred classes."
+when = ["?sub uw:insured ?p", "?p uw:hasConditionEvidence cond:CardiometabolicCondition"]
+then = ["?sub uw:hasFinding uw:PreferredIneligible"]
+
+[[rule]]
+id = "UW-TOBACCO-LAB"
+stratum = 1
+description = "A positive cotinine test means tobacco use."
+when = ["?sub uw:hasLabResult ?lab", "?lab uw:labTest uw:Cotinine", "?lab uw:positive true"]
+then = ["?sub uw:hasFinding uw:TobaccoUseDetected"]
+
+[[rule]]
+id = "UW-REILL-PREFERRED"
+stratum = 1
+description = "The signed illustration assumes a preferred class the case cannot get."
+when = [
+  "?sub uw:hasIllustration ?ill",
+  "?ill uw:assumedRateClass ?rc",
+  "?rc uw:preferredTier true",
+  "?sub uw:hasFinding uw:PreferredIneligible",
+]
+then = ["?sub uw:hasFinding uw:RequiresReillustration"]
+
+[[rule]]
+id = "UW-REILL-TOBACCO"
+stratum = 1
+description = "The signed illustration assumes non-tobacco rates, but tobacco use was detected."
+when = [
+  "?sub uw:hasIllustration ?ill",
+  "?ill uw:assumedRateClass ?rc",
+  "?rc uw:tobaccoClass false",
+  "?sub uw:hasFinding uw:TobaccoUseDetected",
+]
+then = ["?sub uw:hasFinding uw:RequiresReillustration"]

@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: fct_submissions
+    description: "One row per submission. The business truth for new-business reporting."
+    columns:
+      - name: submission_id
+        data_tests: [unique, not_null]
+      - name: is_placed
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+                quote: false
+  - name: dim_rate_class
+    columns:
+      - name: rate_class_code
+        data_tests: [unique, not_null]
+  - name: metricflow_time_spine
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day

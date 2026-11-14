@@ -218,3 +218,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- semantic_to_reasoning ---
+# Rust build output
+app/target/
+# Generated data (Bronze CSVs, DuckDB warehouse, LLM candidates, graph dumps)
+data/
+# dbt / MetricFlow
+analytics/target/
+analytics/dbt_packages/
+analytics/logs/
+analytics/.user.yml

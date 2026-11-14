@@ -1,0 +1,87 @@
+version: 2
+
+models:
+  - name: parties
+    columns:
+      - name: party_id
+        data_tests: [unique, not_null]
+      - name: party_type
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["PERSON", "TRUST", "COMPANY"]
+  - name: relationships
+    columns:
+      - name: relationship
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["SPOUSE", "PARENT_OF", "EMPLOYER_OF"]
+      - name: from_party_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('parties')
+                field: party_id
+  - name: trusts
+    columns:
+      - name: trust_party_id
+        data_tests: [unique, not_null]
+  - name: products
+    columns:
+      - name: product_code
+        data_tests: [unique, not_null]
+  - name: submissions
+    columns:
+      - name: submission_id
+        data_tests: [unique, not_null]
+      - name: received_date
+        data_tests: [not_null]
+      - name: channel
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["BROKERAGE", "CAREER_AGENT", "DIRECT", "BANK"]
+      - name: status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["IN_UNDERWRITING", "APPROVED", "PLACED", "DECLINED", "WITHDRAWN"]
+      - name: face_amount
+        data_tests: [not_null]
+      - name: insured_party_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('parties')
+                field: party_id
+      - name: product_code
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('products')
+                field: product_code
+  - name: illustrations
+    columns:
+      - name: assumed_rate_class
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["PREFERRED_PLUS_NT", "PREFERRED_NT", "STANDARD_NT", "PREFERRED_TOBACCO", "STANDARD_TOBACCO"]
+  - name: disclosures
+    columns:
+      - name: question_code
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["DIABETES", "HEART", "HYPERTENSION"]
+  - name: lab_results
+    columns:
+      - name: submission_id
+        data_tests: [not_null]
+  - name: rx_fills
+    columns:
+      - name: rx_id
+        data_tests: [unique, not_null]

@@ -1,0 +1,7 @@
+s2r:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('S2R_WAREHOUSE', '../data/warehouse.duckdb') }}"
+      threads: 4

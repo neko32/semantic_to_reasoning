@@ -1,0 +1,159 @@
+@prefix uw:   <https://example.org/s2r/uw#> .
+@prefix cond: <https://example.org/s2r/condition/> .
+@prefix rc:   <https://example.org/s2r/rate-class/> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# ---------------------------------------------------------------------------
+# Underwriting ontology for the semantic_to_reasoning POC.
+# All companies, people, products and figures are fictional.
+# The reasoner compiles the OWL axioms below into rules (see docs/design.md):
+#   rdfs:subClassOf, rdfs:subPropertyOf, owl:inverseOf, owl:SymmetricProperty,
+#   owl:TransitiveProperty, owl:propertyChainAxiom
+# ---------------------------------------------------------------------------
+
+<https://example.org/s2r/uw> a owl:Ontology ;
+    rdfs:label "Fictional life-insurance new-business ontology" .
+
+# --- Parties -----------------------------------------------------------------
+uw:Party   a owl:Class .
+uw:Person  a owl:Class ; rdfs:subClassOf uw:Party .
+uw:Trust   a owl:Class ; rdfs:subClassOf uw:Party .
+uw:Company a owl:Class ; rdfs:subClassOf uw:Party .
+
+uw:displayName a owl:DatatypeProperty .
+
+# --- Relationship truth: who has an insurable interest in whom -----------------
+uw:hasInsurableInterestIn a owl:ObjectProperty ;
+    rdfs:comment "Subject would suffer a loss on the death of the object." .
+
+uw:familyMemberOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf uw:hasInsurableInterestIn .
+
+uw:spouseOf a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:subPropertyOf uw:familyMemberOf .
+
+uw:ancestorOf a owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:subPropertyOf uw:familyMemberOf .
+
+uw:descendantOf a owl:ObjectProperty , owl:TransitiveProperty ;
+    owl:inverseOf uw:ancestorOf ;
+    rdfs:subPropertyOf uw:familyMemberOf .
+
+uw:parentOf a owl:ObjectProperty ;
+    rdfs:subPropertyOf uw:ancestorOf .
+
+uw:childOf a owl:ObjectProperty ;
+    owl:inverseOf uw:parentOf ;
+    rdfs:subPropertyOf uw:descendantOf .
+
+uw:employs a owl:ObjectProperty ;
+    rdfs:comment "Key-person interest: an employer has an interest in its key employee." ;
+    rdfs:subPropertyOf uw:hasInsurableInterestIn .
+
+uw:grantor a owl:ObjectProperty ;
+    rdfs:comment "Trust -> the person who created the trust." .
+
+# A trust inherits the insurable interest of its grantor.
+uw:hasInsurableInterestIn owl:propertyChainAxiom ( uw:grantor uw:hasInsurableInterestIn ) .
+
+# --- New business -------------------------------------------------------------
+uw:Submission   a owl:Class .
+uw:Illustration a owl:Class .
+uw:Product      a owl:Class .
+uw:Prescription a owl:Class .
+uw:LabResult    a owl:Class .
+
+uw:insured          a owl:ObjectProperty .
+uw:owner            a owl:ObjectProperty .
+uw:forProduct       a owl:ObjectProperty .
+uw:hasIllustration  a owl:ObjectProperty .
+uw:assumedRateClass a owl:ObjectProperty .
+uw:hasLabResult     a owl:ObjectProperty .
+uw:hasPrescription  a owl:ObjectProperty .
+uw:prescribedDrug   a owl:ObjectProperty .
+uw:disclosedNo      a owl:ObjectProperty ; rdfs:comment "Applicant answered 'no' to the question about this condition." .
+uw:disclosedYes     a owl:ObjectProperty ; rdfs:comment "Applicant answered 'yes' to the question about this condition." .
+uw:hasFinding       a owl:ObjectProperty .
+uw:channel          a owl:DatatypeProperty .
+uw:status           a owl:DatatypeProperty .
+uw:faceAmount       a owl:DatatypeProperty .
+uw:receivedOn       a owl:DatatypeProperty .
+uw:productType      a owl:DatatypeProperty .
+uw:drugText         a owl:DatatypeProperty .
+
+# --- Medical knowledge ----------------------------------------------------------
+uw:Drug      a owl:Class .
+uw:Condition a owl:Class .
+
+uw:treats a owl:ObjectProperty ; rdfs:domain uw:Drug ; rdfs:range uw:Condition .
+
+uw:subConditionOf a owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:comment "Narrower condition -> broader condition (like skos:broaderTransitive)." .
+
+uw:hasConditionEvidence a owl:ObjectProperty .
+uw:indicatedCondition   a owl:ObjectProperty ;
+    rdfs:comment "Condition implied by prescription history (not necessarily disclosed)." ;
+    rdfs:subPropertyOf uw:hasConditionEvidence .
+uw:declaredCondition    a owl:ObjectProperty ;
+    rdfs:subPropertyOf uw:hasConditionEvidence .
+
+# Person -> prescription -> drug -> condition  ==>  person indicatedCondition condition
+uw:indicatedCondition owl:propertyChainAxiom ( uw:hasPrescription uw:prescribedDrug uw:treats ) .
+# Evidence of a narrow condition is evidence of every broader one.
+uw:indicatedCondition    owl:propertyChainAxiom ( uw:indicatedCondition uw:subConditionOf ) .
+uw:hasConditionEvidence  owl:propertyChainAxiom ( uw:hasConditionEvidence uw:subConditionOf ) .
+
+# Condition hierarchy (fictional simplification of a clinical taxonomy).
+cond:CardiometabolicCondition a uw:Condition ; rdfs:label "Cardiometabolic condition" .
+cond:EndocrineDisorder        a uw:Condition ; rdfs:label "Endocrine disorder" .
+cond:RespiratoryCondition     a uw:Condition ; rdfs:label "Respiratory condition" .
+cond:MentalHealthCondition    a uw:Condition ; rdfs:label "Mental health condition" .
+
+cond:DiabetesMellitus      a uw:Condition ; rdfs:label "Diabetes mellitus" ;
+    uw:subConditionOf cond:CardiometabolicCondition , cond:EndocrineDisorder .
+cond:Type2Diabetes         a uw:Condition ; rdfs:label "Type 2 diabetes" ;
+    uw:subConditionOf cond:DiabetesMellitus .
+cond:HeartDisease          a uw:Condition ; rdfs:label "Heart disease" ;
+    uw:subConditionOf cond:CardiometabolicCondition .
+cond:CoronaryArteryDisease a uw:Condition ; rdfs:label "Coronary artery disease" ;
+    uw:subConditionOf cond:HeartDisease .
+cond:AtrialFibrillation    a uw:Condition ; rdfs:label "Atrial fibrillation" ;
+    uw:subConditionOf cond:HeartDisease .
+cond:Hypertension          a uw:Condition ; rdfs:label "Hypertension" ;
+    uw:subConditionOf cond:CardiometabolicCondition .
+cond:Hyperlipidemia        a uw:Condition ; rdfs:label "Hyperlipidemia" ;
+    uw:subConditionOf cond:CardiometabolicCondition .
+cond:Hypothyroidism        a uw:Condition ; rdfs:label "Hypothyroidism" ;
+    uw:subConditionOf cond:EndocrineDisorder .
+cond:Asthma                a uw:Condition ; rdfs:label "Asthma" ;
+    uw:subConditionOf cond:RespiratoryCondition .
+cond:Depression            a uw:Condition ; rdfs:label "Depression" ;
+    uw:subConditionOf cond:MentalHealthCondition .
+
+# --- Rate classes ----------------------------------------------------------------
+uw:RateClass a owl:Class .
+uw:preferredTier a owl:DatatypeProperty .
+uw:tobaccoClass  a owl:DatatypeProperty .
+
+rc:PreferredPlusNT   a uw:RateClass ; rdfs:label "Preferred Plus Non-Tobacco" ; uw:preferredTier true  ; uw:tobaccoClass false .
+rc:PreferredNT       a uw:RateClass ; rdfs:label "Preferred Non-Tobacco"      ; uw:preferredTier true  ; uw:tobaccoClass false .
+rc:StandardNT        a uw:RateClass ; rdfs:label "Standard Non-Tobacco"       ; uw:preferredTier false ; uw:tobaccoClass false .
+rc:PreferredTobacco  a uw:RateClass ; rdfs:label "Preferred Tobacco"          ; uw:preferredTier true  ; uw:tobaccoClass true .
+rc:StandardTobacco   a uw:RateClass ; rdfs:label "Standard Tobacco"           ; uw:preferredTier false ; uw:tobaccoClass true .
+
+# --- Lab tests & findings -----------------------------------------------------------
+uw:LabTest a owl:Class .
+uw:labTest  a owl:ObjectProperty .
+uw:positive a owl:DatatypeProperty .
+uw:Cotinine a uw:LabTest ; rdfs:label "Cotinine (nicotine metabolite)" .
+
+uw:Finding a owl:Class .
+uw:InsurableInterestNotEstablished a uw:Finding ; rdfs:label "Insurable interest not established (possible STOLI)" .
+uw:PotentialNonDisclosure          a uw:Finding ; rdfs:label "Prescription history contradicts a 'no' answer" .
+uw:PreferredIneligible             a uw:Finding ; rdfs:label "Cardiometabolic evidence: preferred classes unavailable" .
+uw:TobaccoUseDetected              a uw:Finding ; rdfs:label "Tobacco use detected" .
+uw:RequiresReillustration          a uw:Finding ; rdfs:label "Signed illustration assumes a rate class the case cannot get" .

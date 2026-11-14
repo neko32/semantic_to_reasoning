@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7c3aed"/>
+    </marker>
+    <style>
+      .title { font-size: 28px; font-weight: 700; fill: #0f172a; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .lane { font-size: 15px; font-weight: 700; letter-spacing: .04em; }
+      .box { rx: 10; ry: 10; stroke-width: 1.5; }
+      .label { font-size: 15px; font-weight: 600; fill: #0f172a; }
+      .small { font-size: 12.5px; fill: #475569; }
+      .tiny { font-size: 11.5px; fill: #64748b; }
+      .head { font-size: 13px; font-weight: 700; fill: #475569; }
+      .cell { font-size: 14px; fill: #0f172a; }
+      .good { fill: #047857; font-weight: 700; }
+      .bad { fill: #b91c1c; font-weight: 700; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="760" fill="#ffffff"/>
+
+  <text x="40" y="52" class="title">Gold gives you business truth. A graph gives you relationship truth.</text>
+  <text x="40" y="80" class="subtitle">Same Silver data, same questions, two paths. Synthetic life-insurance new business: illustration → submission → underwriting.</text>
+
+  <!-- Shared Bronze / Silver -->
+  <rect x="40" y="110" width="250" height="300" fill="#f8fafc" stroke="#cbd5e1" class="box"/>
+  <text x="58" y="136" class="lane" fill="#475569">SHARED (dbt + DuckDB)</text>
+  <rect x="60" y="152" width="210" height="88" fill="#fff7ed" stroke="#fdba74" class="box"/>
+  <text x="76" y="178" class="label">Bronze</text>
+  <text x="76" y="198" class="small">raw CSV, all text</text>
+  <text x="76" y="216" class="small">"BGA", "$1,000,000.00",</text>
+  <text x="76" y="232" class="small">"14-Mar-1980", duplicates</text>
+  <rect x="60" y="262" width="210" height="128" fill="#f1f5f9" stroke="#94a3b8" class="box"/>
+  <text x="76" y="288" class="label">Silver</text>
+  <text x="76" y="308" class="small">typed · deduplicated · conformed</text>
+  <text x="76" y="328" class="small">submissions, parties,</text>
+  <text x="76" y="346" class="small">relationships, trusts,</text>
+  <text x="76" y="364" class="small">disclosures, Rx fills, labs,</text>
+  <text x="76" y="382" class="small">illustrations</text>
+  <line x1="165" y1="240" x2="165" y2="260" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Gold lane -->
+  <rect x="320" y="110" width="400" height="140" fill="#fffbeb" stroke="#f59e0b" class="box"/>
+  <text x="338" y="136" class="lane" fill="#b45309">GOLD PATH · business truth</text>
+  <rect x="338" y="150" width="170" height="84" fill="#ffffff" stroke="#f59e0b" class="box"/>
+  <text x="352" y="175" class="label">Gold star schema</text>
+  <text x="352" y="195" class="small">fct_submissions,</text>
+  <text x="352" y="212" class="small">bridge_party_relationship,</text>
+  <text x="352" y="229" class="small">ref tables</text>
+  <rect x="530" y="150" width="172" height="84" fill="#ffffff" stroke="#f59e0b" class="box"/>
+  <text x="544" y="175" class="label">Semantic layer</text>
+  <text x="544" y="195" class="small">MetricFlow metrics:</text>
+  <text x="544" y="212" class="small">placement_rate,</text>
+  <text x="544" y="229" class="small">avg_face_amount</text>
+  <line x1="508" y1="192" x2="528" y2="192" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Graph lane -->
+  <rect x="320" y="270" width="400" height="140" fill="#eff6ff" stroke="#3b82f6" class="box"/>
+  <text x="338" y="296" class="lane" fill="#1d4ed8">GRAPH PATH · relationship truth</text>
+  <rect x="338" y="310" width="170" height="84" fill="#ffffff" stroke="#3b82f6" class="box"/>
+  <text x="352" y="335" class="label">Triple store</text>
+  <text x="352" y="355" class="small">Oxigraph (embedded)</text>
+  <text x="352" y="372" class="small">+ ontology: symmetric,</text>
+  <text x="352" y="389" class="small">transitive, chains</text>
+  <rect x="530" y="310" width="172" height="84" fill="#ffffff" stroke="#3b82f6" class="box"/>
+  <text x="544" y="335" class="label">Reasoner</text>
+  <text x="544" y="355" class="small">OWL RL subset + rules</text>
+  <text x="544" y="372" class="small">fixpoint, provenance:</text>
+  <text x="544" y="389" class="small">every fact explains itself</text>
+  <line x1="508" y1="352" x2="528" y2="352" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <line x1="270" y1="300" x2="336" y2="200" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="270" y1="340" x2="336" y2="350" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- LLM -->
+  <rect x="750" y="270" width="410" height="140" fill="#faf5ff" stroke="#7c3aed" class="box" stroke-dasharray="6 4"/>
+  <text x="768" y="296" class="lane" fill="#6d28d9">LLM · knowledge extraction only</text>
+  <text x="768" y="322" class="small">Gemma (local, LM Studio) proposes what the curated</text>
+  <text x="768" y="340" class="small">dictionary lacks: "Jardiance" → empagliflozin → type 2 diabetes.</text>
+  <text x="768" y="364" class="small">JSON schema · allow-listed ids · cached · confidence ≥ 0.8</text>
+  <text x="768" y="382" class="small">Never decides an outcome. Every conclusion that leans on it</text>
+  <text x="768" y="400" class="small">is flagged in the explanation.</text>
+  <line x1="750" y1="340" x2="704" y2="340" stroke="#7c3aed" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowp)"/>
+
+  <rect x="750" y="110" width="410" height="140" fill="#f8fafc" stroke="#cbd5e1" class="box"/>
+  <text x="768" y="136" class="lane" fill="#475569">WHAT THE GRAPH KNOWS THAT GOLD DOESN'T</text>
+  <text x="768" y="162" class="small">• spouseOf is symmetric; ancestorOf is transitive</text>
+  <text x="768" y="182" class="small">• a trust inherits its grantor's insurable interest</text>
+  <text x="768" y="202" class="small">• Rx → drug → treats → condition</text>
+  <text x="768" y="222" class="small">• atrial fibrillation ⊑ heart disease ⊑ cardiometabolic</text>
+  <text x="768" y="242" class="small">• cardiometabolic evidence rules out preferred rates</text>
+
+  <!-- Scoreboard -->
+  <text x="40" y="458" class="lane" fill="#0f172a">SAME QUESTIONS, BOTH PATHS (1,000 submissions, seed 42)</text>
+  <rect x="40" y="470" width="1120" height="250" fill="#ffffff" stroke="#cbd5e1" class="box"/>
+  <text x="60" y="500" class="head">QUESTION</text>
+  <text x="640" y="500" class="head">GOLD</text>
+  <text x="760" y="500" class="head">GRAPH</text>
+  <text x="880" y="500" class="head">WHY</text>
+  <line x1="56" y1="512" x2="1144" y2="512" stroke="#e2e8f0"/>
+
+  <text x="60" y="542" class="cell">Q1  Placement rate &amp; avg face amount by channel × product</text>
+  <text x="640" y="542" class="cell good">16 rows</text>
+  <text x="760" y="542" class="cell good">16 rows</text>
+  <text x="880" y="542" class="small">identical: Gold's home ground</text>
+  <line x1="56" y1="560" x2="1144" y2="560" stroke="#f1f5f9"/>
+
+  <text x="60" y="590" class="cell">Q2  Which applications lack an insurable interest (STOLI)?</text>
+  <text x="640" y="590" class="cell bad">36</text>
+  <text x="760" y="590" class="cell good">12</text>
+  <text x="880" y="590" class="small">Gold: 24 false alarms (grandparents, trusts)</text>
+  <line x1="56" y1="608" x2="1144" y2="608" stroke="#f1f5f9"/>
+
+  <text x="60" y="638" class="cell">Q3  Which "no" answers contradict the Rx history?</text>
+  <text x="640" y="638" class="cell bad">8</text>
+  <text x="760" y="638" class="cell good">27</text>
+  <text x="880" y="638" class="small">brands, condition hierarchy, LLM knowledge</text>
+  <line x1="56" y1="656" x2="1144" y2="656" stroke="#f1f5f9"/>
+
+  <text x="60" y="686" class="cell">Q4  Which signed illustrations assume an unreachable rate class?</text>
+  <text x="640" y="686" class="cell bad">28</text>
+  <text x="760" y="686" class="cell good">55</text>
+  <text x="880" y="686" class="small">conditions implied, never disclosed</text>
+
+  <text x="40" y="748" class="tiny">All data is synthetic and fictional. Graph answers match an independent oracle. Gold SQL is a fair best effort (both directions, same curated dictionary).</text>
+</svg>
