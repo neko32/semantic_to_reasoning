@@ -20,13 +20,19 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: app
-      # DuckDB is bundled C++. cross builds inside an image that has a musl C++ toolchain.
+      # DuckDB is bundled C++17. The GCC in the cross musl image is too old for DuckDB 2.0,
+      # so we cross-compile with Zig's clang + libc++ via cargo-zigbuild.
       - uses: taiki-e/install-action@v2
         with:
-          tool: cross
+          tool: cargo-zigbuild
+      - name: Install Zig
+        run: pip3 install ziglang
       - name: Build static binary
         working-directory: app
-        run: cross build --release --target x86_64-unknown-linux-musl
+        env:
+          # Link Zig's libc++ statically instead of GNU libstdc++.
+          CXXSTDLIB_x86_64_unknown_linux_musl: c++
+        run: cargo zigbuild --release --target x86_64-unknown-linux-musl
       - name: Smoke test (static binary runs on the host)
         run: |
           file app/target/x86_64-unknown-linux-musl/release/s2r

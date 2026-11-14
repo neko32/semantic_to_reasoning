@@ -212,3 +212,5 @@ Line coverage: 96.5% (`cargo llvm-cov`, report in `docs/coverage/html`).
   no cardinality.
 * MetricFlow is pinned to dbt Core v1 (dbt-metricflow 0.15 requires it).
 * The LLM step is non-deterministic across model versions; the cache file pins one run.
+* Release builds use cargo-zigbuild. The first attempt used cross, but the GCC in its musl image
+  cannot compile DuckDB 2.0 (C++ exception-specification and `-fpermissive` errors).

@@ -67,7 +67,7 @@
 <tr><td>Rust</td><td>1.99.1</td><td>Compiler (edition 2024)</td></tr>
 <tr><td>cargo-llvm-cov</td><td>latest</td><td>Line coverage; HTML report in <code>docs/coverage/html</code></td></tr>
 <tr><td>cargo-audit</td><td>latest</td><td>RustSec advisory scan</td></tr>
-<tr><td>cross</td><td>latest</td><td>Static <code>x86_64-unknown-linux-musl</code> release build with a C++ toolchain for bundled DuckDB</td></tr>
+<tr><td>cargo-zigbuild + Zig</td><td>latest</td><td>Static <code>x86_64-unknown-linux-musl</code> release build; Zig's clang and libc++ compile the bundled DuckDB C++17 (the GCC in the cross images is too old)</td></tr>
 <tr><td>uv</td><td>0.13.8</td><td>Python and virtualenv management for <code>analytics/</code></td></tr>
 </table></div>
 

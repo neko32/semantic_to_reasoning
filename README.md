@@ -108,7 +108,7 @@ s2r export                               # reasoned graph as N-Triples
 
 CI runs fmt, clippy (pedantic, `-D warnings`), coverage (≥ 90%), cargo audit, and the full pipeline
 with the real dbt and MetricFlow. Pushing a `v*` tag builds a static `x86_64-unknown-linux-musl`
-binary with cross.
+binary with cargo-zigbuild (Zig clang + libc++, needed for the bundled DuckDB C++).
 
 ## Stack
 
